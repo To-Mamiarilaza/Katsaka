@@ -5,6 +5,7 @@
 package responsable;
 
 import champ.Parcelle;
+import java.util.List;
 
 /**
  *
@@ -14,7 +15,7 @@ public class Responsable {
 /// Attribut du classe 
     int idResponsable;
     String nom;
-    Parcelle[] parcelles;
+    List<Parcelle> parcelles;
     
 /// Encapsulation et controle unitaire
 
@@ -38,11 +39,11 @@ public class Responsable {
         this.nom = nom;
     }
 
-    public Parcelle[] getParcelles() {
+    public List<Parcelle> getParcelles() {
         return parcelles;
     }
 
-    public void setParcelles(Parcelle[] parcelles) throws Exception {
+    public void setParcelles(List<Parcelle> parcelles) throws Exception {
         if (parcelles == null) {
             throw new Exception("Les parcelles du responsable ne doit pas être null !");
         }
@@ -54,7 +55,7 @@ public class Responsable {
     public Responsable() {
     }
 
-    public Responsable(int idResponsable, String nom, Parcelle[] parcelles) throws Exception {
+    public Responsable(int idResponsable, String nom, List<Parcelle> parcelles) throws Exception {
         setIdResponsable(idResponsable);
         setNom(nom);
         setParcelles(parcelles);

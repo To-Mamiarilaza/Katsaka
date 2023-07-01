@@ -4,6 +4,7 @@
  */
 package champ;
 
+import java.util.List;
 import recolte.Recolte;
 import responsable.Responsable;
 
@@ -13,51 +14,51 @@ import responsable.Responsable;
  */
 public class Champ {
 /// Les attributs du classe
-    Responsable[] responsables;
-    Parcelle[] parcelles;
-    Recolte[] effectue;
-    Recolte[] prevision;
+    List<Responsable> responsables;
+    List<Parcelle> parcelles;
+    List<Recolte> effectue;
+    List<Recolte> prevision;
     
 /// Test unitaire des champs
 
-    public Responsable[] getResponsables() {
+    public List<Responsable> getResponsables() {
         return responsables;
     }
 
-    public void setResponsables(Responsable[] responsables) throws Exception {
+    public void setResponsables(List<Responsable> responsables) throws Exception {
         if (responsables == null) {
             throw new Exception("Les responsables ne doivent pas être null");
         }
         this.responsables = responsables;
     }
 
-    public Parcelle[] getParcelles() {
+    public List<Parcelle> getParcelles() {
         return parcelles;
     }
 
-    public void setParcelles(Parcelle[] parcelles) throws Exception {
+    public void setParcelles(List<Parcelle> parcelles) throws Exception {
         if (parcelles == null) {
             throw new Exception("Les parcelles ne doivent pas être null");
         }
         this.parcelles = parcelles;
     }
 
-    public Recolte[] getEffectue() {
+    public List<Recolte> getEffectue() {
         return effectue;
     }
 
-    public void setEffectue(Recolte[] effectue) throws Exception {
+    public void setEffectue(List<Recolte> effectue) throws Exception {
         if (effectue == null) {
             throw new Exception("Les recoltes effectue ne doivent pas être null");
         }
         this.effectue = effectue;
     }
 
-    public Recolte[] getPrevision() {
+    public List<Recolte> getPrevision() {
         return prevision;
     }
 
-    public void setPrevision(Recolte[] prevision) throws Exception {
+    public void setPrevision(List<Recolte> prevision) throws Exception {
         if (prevision == null) {
             throw new Exception("Les prevision de recolte doivent pas être null");
         }
@@ -69,7 +70,7 @@ public class Champ {
     public Champ() {
     }
 
-    public Champ(Responsable[] responsables, Parcelle[] parcelles, Recolte[] effectue, Recolte[] prevision) throws Exception {
+    public Champ(List<Responsable> responsables, List<Parcelle> parcelles, List<Recolte> effectue, List<Recolte> prevision) throws Exception {
         setResponsables(responsables);
         setParcelles(parcelles);
         setEffectue(effectue);

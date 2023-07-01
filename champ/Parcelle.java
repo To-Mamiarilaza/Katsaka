@@ -4,6 +4,8 @@
  */
 package champ;
 
+import java.util.ArrayList;
+import java.util.List;
 import responsable.Responsable;
 import suivie.Suivie;
 
@@ -16,7 +18,7 @@ public class Parcelle {
     int idParcelle;
     String nom;
     Responsable responsable;
-    Suivie[] suivies;
+    List<Suivie> suivies;
     
 /// Constructeur et test unitaire
 
@@ -53,11 +55,11 @@ public class Parcelle {
         this.responsable = responsable;
     }
 
-    public Suivie[] getSuivies() {
+    public List<Suivie> getSuivies() {
         return suivies;
     }
 
-    public void setSuivies(Suivie[] suivies) throws Exception {
+    public void setSuivies(List<Suivie> suivies) throws Exception {
         if (suivies == null) {
             throw new Exception("Les suivies ne doit pas être null");
         }
@@ -69,11 +71,18 @@ public class Parcelle {
     public Parcelle() {
     }
 
-    public Parcelle(int idParcelle, String nom, Responsable responsable, Suivie[] suivies) throws Exception {
+    public Parcelle(int idParcelle, String nom, Responsable responsable, List<Suivie> suivies) throws Exception {
         setIdParcelle(idParcelle);
         setNom(nom);
         setResponsable(responsable);
         setSuivies(suivies);
+    }
+    
+/// Les fonction du classe
+    
+    public List<Parcelle> findAllParcelles() {
+        List<Parcelle> parcelles = new ArrayList<>();
+        return null;
     }
     
     
