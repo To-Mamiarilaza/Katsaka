@@ -53,7 +53,7 @@ public class Anomalie {
         return this.apres;
     }
     public void setApres(double apres) throws Exception {
-        if (avant < 0) throw new Exception("La valeur apres ne pas être négative");
+        if (apres < 0) throw new Exception("La valeur apres ne pas être négative");
         this.apres = apres;
     }
 }
