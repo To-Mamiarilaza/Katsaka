@@ -61,6 +61,11 @@ public class Responsable {
         setParcelles(parcelles);
     }
     
+    public Responsable(int idResponsable, String nom) throws Exception {
+        setIdResponsable(idResponsable);
+        setNom(nom);
+    }
+    
     
     
 }
