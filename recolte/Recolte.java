@@ -5,7 +5,17 @@
 package recolte;
 
 import champ.Parcelle;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import pgconnect.PGConnection;
 
 /**
  *
@@ -20,6 +30,66 @@ public class Recolte {
     double nombreMais;
     double longueurMais;
     double poids;
+    
+    public int save(Connection connection) throws Exception {
+        int idRecolte = 0;
+        ResultSet rs = null;
+        Statement stmt = null;
+        boolean wasConnected = true;
+        if (connection == null) {
+            connection = PGConnection.getConnection();
+            wasConnected = false;
+        }
+        try {
+            String sql = "INSERT INTO recolte (nb_epi, longueur, poids, id_parcelle, date_recolte) VALUES ("+getNombreMais()+", "+getLongueurMais()+", "+getPoids()+", "+ getParcelle().getIdParcelle()+", "+getDate()+") RETURNING id";
+            stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.executeBatch();
+            rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                idRecolte = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (!wasConnected) {
+                connection.close();
+            }
+        }
+        return idRecolte;
+    }
+    
+    public static List<Recolte> findAll(Connection connection) throws Exception {
+        ArrayList<Recolte> models = new ArrayList<>();
+        boolean wasConnected = true;
+        if (connection == null) {
+            connection = PGConnection.getConnection();
+            wasConnected = false;
+        }
+        
+        String query = "SELECT id_recolte, nb_epi, longueur, poids, id_parcelle, date_recolte FROM recolte";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int idRecolte = rs.getInt("id_recolte");
+                double npEpi = rs.getDouble("nb_epi");
+                double longueur = rs.getDouble("longueur");
+                double poids = rs.getDouble("poids");
+                LocalDate dateRecolte = rs.getDate("date_recolte").toLocalDate();
+                int id_parcelle = rs.getInt("id_parcelle");
+                Parcelle parcelle = new Parcelle();
+                // parcelle = Parcelle.findById(connection, id_parcelle);
+                Recolte model = new Recolte(idRecolte, dateRecolte, parcelle, npEpi, longueur, poids);
+                models.add(model);
+            }
+        }
+        if (!wasConnected) {
+            connection.close();
+        }
+        return models;
+    } 
+    
 
 /// Encapsulation et test unitaire
     public int getIdRecolte() {
@@ -154,4 +224,18 @@ public class Recolte {
         setPoids(poids);
     } 
 
+    public static void main(String[] args) {
+        try {
+            LocalDate date = LocalDate.now();
+            Parcelle parcelle = new Parcelle();
+            parcelle.setIdParcelle(3);
+            double nombreMais = 456;
+            double longueurMais = 15;
+            double poids = 300;
+            Recolte recolte = new Recolte(1, date, parcelle, nombreMais, longueurMais, poids);
+            System.out.println(recolte.save(null));
+        } catch (Exception ex) {
+            Logger.getLogger(Recolte.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
