@@ -165,4 +165,13 @@ public class Suivie {
         setVerete(verete);
         setParcelle(parcelle);
     }
+    
+    public Suivie(String date, String nombreTige, String nombreMais, String longueurMais, String verete, String idParcelle) throws Exception {
+        setDate(date);
+        setNombreTige(nombreTige);
+        setNombreMais(nombreMais);
+        setLongueurMais(longueurMais);
+        setVerete(verete);
+        setParcelle(idParcelle);
+    }
 }
