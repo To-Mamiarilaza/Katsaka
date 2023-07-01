@@ -45,13 +45,15 @@ public class Anomalie {
     public double getAvant() {
         return this.avant;
     }
-    public void setAvant(double avant) {
+    public void setAvant(double avant) throws Exception {
+        if (avant < 0) throw new Exception("La valeur avant ne pas être négative");
         this.avant = avant;
     }
     public double getApres() {
         return this.apres;
     }
-    public void setApres(double apres) {
+    public void setApres(double apres) throws Exception {
+        if (avant < 0) throw new Exception("La valeur apres ne pas être négative");
         this.apres = apres;
     }
 }
