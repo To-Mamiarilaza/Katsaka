@@ -22,7 +22,7 @@ public class PGConnection {
             Class.forName("org.postgresql.Driver");
             
             // Creation de l'objet de connection
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://192.168.10.211:5432/" + database, user,  mdp);
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://192.168.232.132:5432/" + database, user,  mdp);
             
             connection.setAutoCommit(false);
             return connection;

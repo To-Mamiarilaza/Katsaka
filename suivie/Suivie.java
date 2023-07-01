@@ -5,7 +5,14 @@
 package suivie;
 
 import champ.Parcelle;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import pgconnect.PGConnection;
+import responsable.Responsable;
 
 /**
  *
@@ -64,7 +71,7 @@ public class Suivie {
     }
 
     public void setNombreTige(double nombreTige) throws Exception {
-        if (nombreTige <= 0) {
+        if (nombreTige < 0) {
             throw new Exception("Le nombre de tige ne doit pas être négative ou null !");
         }
         this.nombreTige = nombreTige;
@@ -82,7 +89,7 @@ public class Suivie {
     }
 
     public void setNombreMais(double nombreMais) throws Exception {
-        if (nombreMais <= 0) {
+        if (nombreMais < 0) {
             throw new Exception("Le nombre de mais ne doit pas être négative ou null !");
         }
         this.nombreMais = nombreMais;
@@ -100,7 +107,7 @@ public class Suivie {
     }
 
     public void setLongueurMais(double longueurMais) throws Exception {
-        if (longueurMais <= 0) {
+        if (longueurMais < 0) {
             throw new Exception("La longueur du mais ne doit pas être négative ou null !");
         }
         this.longueurMais = longueurMais;
@@ -118,7 +125,7 @@ public class Suivie {
     }
 
     public void setVerete(double verete) throws Exception {
-        if (verete <= 0) {
+        if (verete < 0) {
             throw new Exception("La verete ne doit pas être négative ou null !");
         }
         this.verete = verete;
@@ -166,6 +173,15 @@ public class Suivie {
         setParcelle(parcelle);
     }
     
+    public Suivie(int idSuivie, LocalDate date, double nombreTige, double nombreMais, double longueurMais, double verete) throws Exception {
+        setIdSuivie(idSuivie);
+        setDate(date);
+        setNombreTige(nombreTige);
+        setNombreMais(nombreMais);
+        setLongueurMais(longueurMais);
+        setVerete(verete);
+    }
+    
     public Suivie(String date, String nombreTige, String nombreMais, String longueurMais, String verete, String idParcelle) throws Exception {
         setDate(date);
         setNombreTige(nombreTige);
@@ -173,5 +189,40 @@ public class Suivie {
         setLongueurMais(longueurMais);
         setVerete(verete);
         setParcelle(idParcelle);
+    }
+    
+    
+    
+/// Fonction du classe suivie
+    // Prendre tous les suivies du parcelle le plus récent le premier
+    public static List<Suivie> findByIdParcelle(Connection connection, int idParcelle) throws Exception {
+        List<Suivie> suivies = new ArrayList<>();
+        Statement statement = null;
+        ResultSet resultset = null;
+        try {
+            connection = PGConnection.getConnection();
+            statement = connection.createStatement();
+            String sql = "SELECT * FROM suivie WHERE id_parcelle = " + idParcelle + " ORDER BY date_suivie DESC";
+            ResultSet result = statement.executeQuery(sql);
+            
+            while (result.next()) {         
+                Suivie suivie = new Suivie(result.getInt("id_suivie"), result.getDate("date_suivie").toLocalDate(), result.getDouble("nb_pied"), result.getDouble("nb_epi"), result.getDouble("longueur_epi"), result.getDouble("verete"));
+                suivies.add(suivie);
+            }
+            
+            return suivies;
+        } catch (Exception e) {
+            if (connection != null) {
+                connection.close();
+            }
+            throw e;
+        } finally {
+            if (resultset != null) {
+                resultset.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+        }
     }
 }
