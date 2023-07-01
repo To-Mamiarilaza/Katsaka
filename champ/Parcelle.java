@@ -121,7 +121,7 @@ public class Parcelle {
                 parcelle.setResponsable(responsable);
                 parcelles.add(parcelle);
 
-                List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle.getIdParcelle());
+                List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle);
                 parcelle.setSuivies(suivies);
             }
 
@@ -159,7 +159,7 @@ public class Parcelle {
                 parcelle.setResponsable(responsable);
                 parcelles.add(parcelle);
 
-                List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle.getIdParcelle());
+                List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle);
                 parcelle.setSuivies(suivies);
                 return parcelle;
             } else {

@@ -194,20 +194,26 @@ public class Suivie {
     
     
 /// Fonction du classe suivie
+    // Insertion d'un nouveau suivie
+    public static void insertSuivie(String idParcelle, String date, String nombreTige, String longueurMais, String nombreMais, String verete) throws Exception {
+        Suivie suivie = new Suivie(date, nombreTige, nombreMais, longueurMais, verete, idParcelle);
+    }
+    
     // Prendre tous les suivies du parcelle le plus récent le premier
-    public static List<Suivie> findByIdParcelle(Connection connection, int idParcelle) throws Exception {
+    public static List<Suivie> findByIdParcelle(Connection connection, Parcelle parcelle) throws Exception {
         List<Suivie> suivies = new ArrayList<>();
         Statement statement = null;
         ResultSet resultset = null;
         try {
             connection = PGConnection.getConnection();
             statement = connection.createStatement();
-            String sql = "SELECT * FROM suivie WHERE id_parcelle = " + idParcelle + " ORDER BY date_suivie DESC";
+            String sql = "SELECT * FROM suivie WHERE id_parcelle = " + parcelle.getIdParcelle() + " ORDER BY date_suivie DESC";
             ResultSet result = statement.executeQuery(sql);
             
             while (result.next()) {         
                 Suivie suivie = new Suivie(result.getInt("id_suivie"), result.getDate("date_suivie").toLocalDate(), result.getDouble("nb_pied"), result.getDouble("nb_epi"), result.getDouble("longueur_epi"), result.getDouble("verete"));
                 suivies.add(suivie);
+                suivie.setParcelle(parcelle);
             }
             
             return suivies;
