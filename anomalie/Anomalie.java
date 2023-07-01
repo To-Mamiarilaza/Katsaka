@@ -7,7 +7,7 @@ public class Anomalie {
     private Suivie suivie;
     private String anomalieDescription;
     private TypeAnomalie type;
-    private CategorieAnomalie category;
+    private CategorieAnomalie categorie;
     private double avant;
     private double apres;
 
@@ -33,5 +33,25 @@ public class Anomalie {
     public TypeAnomalie getType() {
         return this.type;
     }
-    public void setType()
+    public void setType(TypeAnomalie type) {
+        this.type = type;
+    }
+    public CategorieAnomalie gCategorieAnomalie() {
+        return this.categorie;
+    } 
+    public void setCategorieAnomalie(CategorieAnomalie categorie) {
+        this.categorie = categorie;
+    }
+    public double getAvant() {
+        return this.avant;
+    }
+    public void setAvant(double avant) {
+        this.avant = avant;
+    }
+    public double getApres() {
+        return this.apres;
+    }
+    public void setApres(double apres) {
+        this.apres = apres;
+    }
 }
