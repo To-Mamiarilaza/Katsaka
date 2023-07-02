@@ -20,6 +20,7 @@ import responsable.Responsable;
  */
 public class Suivie {
 /// Attributs du classe suivie
+
     int idSuivie;
     LocalDate date;
     double nombreTige;
@@ -27,9 +28,8 @@ public class Suivie {
     double longueurMais;
     double verete;
     Parcelle parcelle;
-    
-/// Encapsulation et controle unitaire de données
 
+/// Encapsulation et controle unitaire de données
     public int getIdSuivie() {
         return idSuivie;
     }
@@ -40,7 +40,7 @@ public class Suivie {
         }
         this.idSuivie = idSuivie;
     }
-    
+
     public void setIdSuivie(String idSuivie) throws Exception {
         if (idSuivie == null || idSuivie.trim().equals("")) {
             throw new Exception("L'id du suivie ne doit pas être vide ou null");
@@ -58,7 +58,7 @@ public class Suivie {
         }
         this.date = date;
     }
-    
+
     public void setDate(String date) throws Exception {
         if (date == null || date.trim().equals(" ")) {
             throw new Exception("La date ne doit pas être vide ou null");
@@ -76,7 +76,7 @@ public class Suivie {
         }
         this.nombreTige = nombreTige;
     }
-    
+
     public void setNombreTige(String nombreTige) throws Exception {
         if (nombreTige == null || nombreTige.trim().equals("")) {
             throw new Exception("Le nombre de tige ne doit pas être vide ou null !");
@@ -94,7 +94,7 @@ public class Suivie {
         }
         this.nombreMais = nombreMais;
     }
-    
+
     public void setNombreMais(String nombreMais) throws Exception {
         if (nombreMais == null || nombreMais.trim().equals("")) {
             throw new Exception("Le nombre de mais ne doit pas être vide ou null !");
@@ -112,7 +112,7 @@ public class Suivie {
         }
         this.longueurMais = longueurMais;
     }
-    
+
     public void setLongueurMais(String longueurMais) throws Exception {
         if (longueurMais == null || longueurMais.trim().equals("")) {
             throw new Exception("Le longueur du mais ne doit pas être vide ou null !");
@@ -130,7 +130,7 @@ public class Suivie {
         }
         this.verete = verete;
     }
-    
+
     public void setVerete(String verete) throws Exception {
         if (verete == null || verete.trim().equals("")) {
             throw new Exception("La verete ne doit pas être vide ou null !");
@@ -148,7 +148,7 @@ public class Suivie {
         }
         this.parcelle = parcelle;
     }
-    
+
     public void setParcelle(String idParcelle) throws Exception {
         if (idParcelle == null || idParcelle.trim().equals("")) {
             throw new Exception("L' ID du parcelle ne doit pas être null ou vide !");
@@ -157,9 +157,8 @@ public class Suivie {
         newParcelle.setIdParcelle(Integer.valueOf(idParcelle));
         setParcelle(newParcelle);
     }
-    
-/// Constructeur du classe Suivie
 
+/// Constructeur du classe Suivie
     public Suivie() {
     }
 
@@ -172,7 +171,7 @@ public class Suivie {
         setVerete(verete);
         setParcelle(parcelle);
     }
-    
+
     public Suivie(int idSuivie, LocalDate date, double nombreTige, double nombreMais, double longueurMais, double verete) throws Exception {
         setIdSuivie(idSuivie);
         setDate(date);
@@ -181,7 +180,7 @@ public class Suivie {
         setLongueurMais(longueurMais);
         setVerete(verete);
     }
-    
+
     public Suivie(String date, String nombreTige, String nombreMais, String longueurMais, String verete, String idParcelle) throws Exception {
         setDate(date);
         setNombreTige(nombreTige);
@@ -190,15 +189,13 @@ public class Suivie {
         setVerete(verete);
         setParcelle(idParcelle);
     }
-    
-    
-    
+
 /// Fonction du classe suivie
     // Insertion d'un nouveau suivie
     public static void insertSuivie(String idParcelle, String date, String nombreTige, String longueurMais, String nombreMais, String verete) throws Exception {
         Suivie suivie = new Suivie(date, nombreTige, nombreMais, longueurMais, verete, idParcelle);
     }
-    
+
     // Prendre tous les suivies du parcelle le plus récent le premier
     public static List<Suivie> findByIdParcelle(Connection connection, Parcelle parcelle) throws Exception {
         List<Suivie> suivies = new ArrayList<>();
@@ -209,13 +206,13 @@ public class Suivie {
             statement = connection.createStatement();
             String sql = "SELECT * FROM suivie WHERE id_parcelle = " + parcelle.getIdParcelle() + " ORDER BY date_suivie DESC";
             ResultSet result = statement.executeQuery(sql);
-            
-            while (result.next()) {         
+
+            while (result.next()) {
                 Suivie suivie = new Suivie(result.getInt("id_suivie"), result.getDate("date_suivie").toLocalDate(), result.getDouble("nb_pied"), result.getDouble("nb_epi"), result.getDouble("longueur_epi"), result.getDouble("verete"));
                 suivies.add(suivie);
                 suivie.setParcelle(parcelle);
             }
-            
+
             return suivies;
         } catch (Exception e) {
             if (connection != null) {
