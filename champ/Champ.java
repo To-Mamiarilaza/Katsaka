@@ -4,6 +4,9 @@
  */
 package champ;
 
+import anomalie.Anomalie;
+import anomalie.AnomalieSuivie;
+import java.sql.Connection;
 import java.util.List;
 import recolte.Recolte;
 import responsable.Responsable;
@@ -77,6 +80,42 @@ public class Champ {
         setPrevision(prevision);
     }
     
+/// Fonction du classe Champ
     
+    // Initialisation du champ 
+    public void initChamp() throws Exception {
+        List<Parcelle> parcelles = Parcelle.findAllParcelles();
+        setParcelles(parcelles);
+    }
     
+    public double getMoyenneCroissance(Parcelle parcelleCible) {
+        double moyenne = 0;
+        for (Parcelle parcelle : parcelles) {
+            if (parcelleCible != parcelle) {
+                moyenne += parcelle.getSuivies().get(0).getLongueurMais()  - parcelle.getSuivies().get(1).getLongueurMais();    // Les deux derniers suivies
+            }
+        }
+        return moyenne / (getParcelles().size() - 1);
+    }
+    
+    public void checkCroissanceAnomalie() throws Exception {
+        Connection connection = pgconnect.PGConnection.getConnection();
+        for (Parcelle parcelle : parcelles) {
+            double moyenneCroissance = getMoyenneCroissance(parcelle);      // Moyenne de croissance entre les parcelles autre que cible
+            System.out.println("Pour parcelle : " + parcelle.getNom() + " moyenne = " + moyenneCroissance);
+            double croissance = parcelle.getSuivies().get(0).getLongueurMais()  - parcelle.getSuivies().get(1).getLongueurMais();
+            if (croissance < moyenneCroissance) {
+               Anomalie anomalie = new AnomalieSuivie(parcelle.getLastSuivie(), 4, moyenneCroissance, croissance);
+               anomalie.save(connection);
+            }
+        }
+        connection.commit();
+        connection.rollback();
+    }
+    
+    public static void main(String[] args) throws Exception {
+        Champ champ = new Champ();
+        champ.initChamp();
+        champ.checkCroissanceAnomalie();        // Vérification des anomalies de croissances
+    }
 }

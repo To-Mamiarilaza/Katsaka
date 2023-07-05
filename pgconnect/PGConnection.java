@@ -16,13 +16,13 @@ public class PGConnection {
         // Fonction qui renvoie la connection vers la base : 
             String database = "gestion_mais";       // Nom de la base
             String user = "postgres";       // User dans postgres
-            String mdp = "malalaniaina";       // Mot de passe
+            String mdp = "postgres";       // Mot de passe
             
             // Charge la classe de driver
             Class.forName("org.postgresql.Driver");
             
             // Creation de l'objet de connection
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://192.168.232.132:5432/" + database, user,  mdp);
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + database, user,  mdp);
             
             connection.setAutoCommit(false);
             return connection;

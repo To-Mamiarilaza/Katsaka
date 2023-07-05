@@ -4,12 +4,15 @@
  */
 package champ;
 
+import anomalie.Anomalie;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import pgconnect.PGConnection;
+import recolte.Recolte;
 import responsable.Responsable;
 import suivie.Suivie;
 
@@ -24,6 +27,8 @@ public class Parcelle {
     String nom;
     Responsable responsable;
     List<Suivie> suivies;
+    Recolte recolte;
+    double longueurMais;     // Longueur moyenne de l'epi du champ
 
 /// Constructeur et test unitaire
     public int getIdParcelle() {
@@ -70,26 +75,47 @@ public class Parcelle {
         this.suivies = suivies;
     }
 
+    public double getLongueurMais() {
+        return longueurMais;
+    }
+
+    public void setLongueurMais(double longueurMais) throws Exception {
+        if (longueurMais < 0) {
+            throw new Exception("La longueur moyenne de l' épi ne doit pas être négative");
+        }
+        this.longueurMais = longueurMais;
+    }
+
+    public Recolte getRecolte() {
+        return recolte;
+    }
+
+    public void setRecolte(Recolte recolte) throws Exception {
+        this.recolte = recolte;
+    }
+    
 /// Les constructeurs du classe Parcellee
     public Parcelle() {
     }
 
-    public Parcelle(int idParcelle, String nom, Responsable responsable, List<Suivie> suivies) throws Exception {
+    public Parcelle(int idParcelle, String nom, Responsable responsable, double longueurMais, List<Suivie> suivies) throws Exception {
         setIdParcelle(idParcelle);
         setNom(nom);
         setResponsable(responsable);
         setSuivies(suivies);
+        setLongueurMais(longueurMais);
     }
 
-    public Parcelle(int idParcelle, String nom) throws Exception {
+    public Parcelle(int idParcelle, String nom, double longueurMais) throws Exception {
         setIdParcelle(idParcelle);
         setNom(nom);
+        setLongueurMais(longueurMais);
     }
 
 /// Les fonction du classe
     // Prendre le dernier suivie
     public Suivie getLastSuivie() {
-        if (getSuivies() == null || getSuivies().get(0) == null) {
+        if (getSuivies() == null || getSuivies().size() == 0) {
             return null;
         }
         return getSuivies().get(0);    // Le dernier en premier
@@ -102,6 +128,8 @@ public class Parcelle {
         }
         return getSuivies().size();
     }
+    
+    // Prends le recolte conçernant 
 
     // Prendre tous les parcelles avec leur suivies ordonnées
     public static List<Parcelle> findAllParcelles() throws Exception {
@@ -117,8 +145,13 @@ public class Parcelle {
 
             while (result.next()) {
                 Responsable responsable = new Responsable(result.getInt("id_responsable"), result.getString("nom_responsable"));
-                Parcelle parcelle = new Parcelle(result.getInt("id_parcelle"), result.getString("nom_parcelle"));
+                Parcelle parcelle = new Parcelle(result.getInt("id_parcelle"), result.getString("nom_parcelle"), result.getDouble("longueur_epi"));
                 parcelle.setResponsable(responsable);
+                Recolte recolte = Recolte.findRecolte(connection, parcelle);
+                if (recolte != null) {
+                    recolte.findAllAnomalie(connection);
+                    parcelle.setRecolte(recolte);
+                }
                 parcelles.add(parcelle);
 
                 List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle);
@@ -155,8 +188,14 @@ public class Parcelle {
 
             if (result.next()) {
                 Responsable responsable = new Responsable(result.getInt("id_responsable"), result.getString("nom_responsable"));
-                Parcelle parcelle = new Parcelle(result.getInt("id_parcelle"), result.getString("nom_parcelle"));
+                Parcelle parcelle = new Parcelle(result.getInt("id_parcelle"), result.getString("nom_parcelle"), result.getDouble("longueur_epi"));
                 parcelle.setResponsable(responsable);
+                Recolte recolte = Recolte.findRecolte(connection, parcelle);
+                if (recolte != null) {
+                    recolte.findAllAnomalie(connection);
+                    parcelle.setRecolte(recolte);
+                }
+                
                 parcelles.add(parcelle);
 
                 List<Suivie> suivies = Suivie.findByIdParcelle(connection, parcelle);
@@ -193,11 +232,9 @@ public class Parcelle {
 //        }
 
         Parcelle test = Parcelle.findById(PGConnection.getConnection(), 3);
-        System.out.println("ID : " + test.getIdParcelle() + " Nom " + test.getNom() + " Responsable " + test.getResponsable().getNom());
-        for (Suivie suivie : test.getSuivies()) {
-            System.out.println("ID suivie : " + suivie.getIdSuivie());
+        for (Anomalie anomaly : test.getLastSuivie().getAnomalies()) {
+            System.out.println(anomaly.getContent());
         }
-
     }
 
 }
